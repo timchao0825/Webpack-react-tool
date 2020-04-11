@@ -12,7 +12,6 @@ const config = {
     filename: 'bundle.js',
     publicPath: '/'
   },
-  mode: 'development',
   resolve: {
     modules: [path.resolve('node_modules'), 'node_modules']
   },
@@ -29,32 +28,9 @@ const config = {
         to: path.join(root_directory, 'build') 
       }
     ])
-  ],
-  module: {
-    rules: [
-      { 
-        test:  /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader' 
-      },
-      {
-        test: /\.(sa|sc|c)ss$/,
-        exclude: /node_modules/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
-      },
-      {
-        test: /\.(png|svg|jpg|gif|pdf)$/,
-        exclude: /node_modules/, 
-        use: [
-          'file-loader'
-        ]
-      }
-    ]
-  }
+  ]
+  
 }
 
 module.exports = config
+
