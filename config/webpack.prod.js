@@ -3,7 +3,7 @@ const merge = require('webpack-merge')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 const common = require('./webpack.common.js')
 
@@ -21,7 +21,12 @@ module.exports = merge( common ,{
         test: /\.(sa|sc|c)ss$/,
         exclude: /node_modules/,
         use: [
-          'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
           {
             loader:'css-loader',
             options:{
@@ -40,7 +45,12 @@ module.exports = merge( common ,{
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
           'css-loader',
           'sass-loader',
         ],
@@ -53,7 +63,7 @@ module.exports = merge( common ,{
           {
             loader: 'file-loader',
             options: {
-              name: '[hash].[ext]',
+              name: '[contenthash].[ext]',
               outputPath: '../dist/assets/images'
             }
           }
@@ -61,6 +71,11 @@ module.exports = merge( common ,{
       }
     ]
   },
+  optimization: {
+    minimizer: [
+      new OptimizeCssAssetsWebpackPlugin()
+    ]
+  }, 
   plugins: [
     new UglifyJsPlugin({
       sourceMap: true,
@@ -72,5 +87,9 @@ module.exports = merge( common ,{
       threshold: 10240,
       minRatio: 0.8,
     }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[hash].css',
+      chunkFilename: 'css/[id].[hash].css',
+    })
   ],
 });/* end module exports */

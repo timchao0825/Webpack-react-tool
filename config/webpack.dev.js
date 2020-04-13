@@ -28,7 +28,12 @@ module.exports = merge( common ,{
         test: /\.(sa|sc|c)ss$/,
         exclude: /node_modules/,
         use: [
-          'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
           {
             loader:'css-loader',
             options:{
@@ -47,7 +52,12 @@ module.exports = merge( common ,{
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../'
+            }
+          },
           'css-loader',
           'sass-loader',
         ],
@@ -66,5 +76,11 @@ module.exports = merge( common ,{
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[id].css',
+    })
+  ],
 });/* end module exports */
