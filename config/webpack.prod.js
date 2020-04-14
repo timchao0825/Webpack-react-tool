@@ -1,9 +1,10 @@
 const path = require('path')
 const merge = require('webpack-merge')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin')
 
 const common = require('./webpack.common.js')
 
@@ -12,12 +13,12 @@ module.exports = merge( common ,{
   devtool: 'source-map',
   module:{
     rules: [
-      { 
+      { // handle js
         test:  /\.(js|jsx)$/,
         exclude: /node_modules/,
         loader: 'babel-loader' 
       },
-      {
+      { // handle css module
         test: /\.(sa|sc|c)ss$/,
         exclude: /node_modules/,
         use: [
@@ -38,11 +39,12 @@ module.exports = merge( common ,{
               }
             }
           },
+          'postcss-loader',
           'sass-loader'
         ],
         include: /\.module\.(sa|sc|c)ss$/
       },
-      {
+      { // handle css without module
         test: /\.(sa|sc|c)ss$/,
         use: [
           {
@@ -52,11 +54,12 @@ module.exports = merge( common ,{
             }
           },
           'css-loader',
+          'postcss-loader',
           'sass-loader',
         ],
         exclude: /\.module\.(sa|sc|c)ss$/
       },
-      {
+      { // handle image
         test: /\.(png|svg|jpg|gif|pdf)$/,
         exclude: /node_modules/, 
         use: [
@@ -66,20 +69,61 @@ module.exports = merge( common ,{
               name: '[contenthash].[ext]',
               outputPath: '../dist/assets/images'
             }
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 85
+              },
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: [0.85, 0.90],
+                speed: 4
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              webp: {
+                quality: 85
+              }
+            }
+          },
+        ]
+      },
+      { // handle font
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/fonts'
+            }
           }
         ]
       }
     ]
   },
   optimization: {
+    minimize:true,
     minimizer: [
-      new OptimizeCssAssetsWebpackPlugin()
+      new OptimizeCssAssetsWebpackPlugin(),
+      new TerserPlugin({
+        sourceMap: true,
+        extractComments: false,
+        terserOptions: {
+          output: {
+            comments: false,
+          },
+        },
+      }),
     ]
   }, 
   plugins: [
-    new UglifyJsPlugin({
-      sourceMap: true,
-    }),
     new CompressionPlugin({
       filename: '[path].gz[query]',
       algorithm: "gzip",
@@ -90,6 +134,7 @@ module.exports = merge( common ,{
     new MiniCssExtractPlugin({
       filename: 'css/[name].[hash].css',
       chunkFilename: 'css/[id].[hash].css',
-    })
+    }),
   ],
 });/* end module exports */
+process.env.NODE_ENV = 'production';
