@@ -14,8 +14,11 @@ class Index extends Component {
     const {test} = this.state;
     return (
       <div className="d-flex">
-        <h3 className={style.red}>Index Page + { test }</h3>
-        <h4 className="border noe-regular-lg p-4">test only class name</h4>
+        <h3 className={style.red}>
+          Index Page + { test }
+          <p>P Tag</p>
+        </h3>
+        <h4 className="border noe-regular-lg">test only class name</h4>
         <img src={testImg} alt=""/>
         <img src={testImg1} alt=""/>
       </div>
