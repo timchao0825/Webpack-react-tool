@@ -17,10 +17,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].[chunkhash].js',
-    publicPath:'/',
+    // publicPath:'/',
   },
   resolve: {
-    modules: [path.resolve('node_modules'), 'node_modules']
+    modules: [path.resolve('node_modules'), 'node_modules'],
     alias: {
       '@src': path.resolve(__dirname, '../src'),
       '@css': path.resolve(__dirname, '../src/assets/css'),
