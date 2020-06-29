@@ -37,7 +37,7 @@ npm install
 
 ## Running the app in Development
 
-Run `npm dev` to intialize and run the webpack development server. Navigate to [http://localhost:3000/](http://localhost:3000). The app will automatically reload if you change any of the source files.
+Run `npm dev | yarn dev` to intialize and run the webpack development server. Navigate to [http://localhost:3000/](http://localhost:3000). The app will automatically reload if you change any of the source files.
 
 ## Running the app in Production
 
